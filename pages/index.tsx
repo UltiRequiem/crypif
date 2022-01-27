@@ -1,29 +1,32 @@
-import { useState } from "react";
+import { FormEventHandler, useState } from "react";
+import type { CryptoInput, CryptoResponse } from "lib/cryptoData";
 
 export default function Home() {
-  const [input, setInput] = useState({});
-  const [data, setData] = useState({});
+  const [input, setInput] = useState<Partial<CryptoInput>>({
+    coin: "BTC",
+    currency: "USD",
+  });
 
-  const summitHandler = (event, data) => {
+  const [data, setData] = useState<Nullable<CryptoResponse>>(null);
+
+  const submitHandler: FormEventHandler = async (event) => {
     event.preventDefault();
 
-    fetch("/api", {
+    const response = await fetch("/api", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((res) => setData(res));
+      body: JSON.stringify(input),
+    });
+
+    setData(await response.json());
   };
 
-  console.log(input);
-  console.log(data);
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div>
       <h1>Crypif</h1>
-      <form onSubmit={(event) => summitHandler(event, input)}>
+      <form onSubmit={submitHandler}>
         <label>
           Date:
           <input
@@ -36,18 +39,18 @@ export default function Home() {
         </label>
 
         <label>
-          Crypto:{" "}
+          Crypto:
           <input
             placeholder="BTC"
             type="text"
             onChange={(event) =>
-              setInput({ ...input, crypto: event.target.value })
+              setInput({ ...input, coin: event.target.value })
             }
           />
         </label>
 
         <label>
-          Currency:{" "}
+          Currency:
           <input
             type="text"
             placeholder="USD"
@@ -60,10 +63,12 @@ export default function Home() {
         <input type="submit" value="Submit" />
       </form>
 
-      <div>
-        In {input.date} {input.crypto} was ${data.past}. Currently it is $
-        {data.rightNow}.
-      </div>
+      {data && (
+        <>
+          In {input.date} {input.coin} was ${data.past}. Currently it is $
+          {data.rightNow}.
+        </>
+      )}
     </div>
   );
 }
