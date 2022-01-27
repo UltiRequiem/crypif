@@ -1,5 +1,6 @@
 import type { CryptoInput, CryptoResponse } from "lib/cryptoData";
 import type { FormEventHandler } from "react";
+import { percentageChange } from "lib/utils";
 import { useState } from "react";
 
 export default function Home() {
@@ -8,7 +9,9 @@ export default function Home() {
     currency: "USD",
   });
 
-  const [quanity, setQuanity] = useState(1);
+  const [quanity, setQuantity] = useState(0);
+
+  console.log(quanity);
 
   const [data, setData] = useState<Nullable<CryptoResponse>>(null);
 
@@ -70,10 +73,18 @@ export default function Home() {
         <input type="submit" value="Submit" />
       </form>
 
+      <input
+        type="text"
+        onChange={(event) => setQuantity(+event.target.value)}
+      />
+
       {data && (
         <>
           In {input.date} {input.coin} was ${data.past}. Currently it is $
-          {data.rightNow}.
+          <p>
+            It has {data.rightNow > data.past ? "increased" : "decreased"} by{" "}
+            {Math.abs(percentageChange(data.past, data.rightNow))}%
+          </p>
         </>
       )}
     </div>
