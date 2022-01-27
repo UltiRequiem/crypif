@@ -1,7 +1,9 @@
 import type { CryptoInput, CryptoResponse } from "lib/cryptoData";
 import type { FormEventHandler } from "react";
-import { percentageChange } from "lib/utils";
+import { percentageChange, percentage } from "lib/utils";
 import { useState } from "react";
+
+import styles from "styles/index.module.css";
 
 export default function Home() {
   const [input, setInput] = useState<Partial<CryptoInput>>({
@@ -9,9 +11,7 @@ export default function Home() {
     currency: "USD",
   });
 
-  const [quanity, setQuantity] = useState(0);
-
-  console.log(quanity);
+  const [cryptoQuantity, setQuantity] = useState(0);
 
   const [data, setData] = useState<Nullable<CryptoResponse>>(null);
 
@@ -34,7 +34,7 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <h1>Crypif</h1>
       <form onSubmit={submitHandler}>
         <label>
@@ -51,7 +51,7 @@ export default function Home() {
         <label>
           Crypto:
           <input
-            placeholder="BTC"
+            placeholder={input.coin}
             type="text"
             onChange={(event) =>
               setInput({ ...input, coin: event.target.value })
@@ -63,7 +63,7 @@ export default function Home() {
           Currency:
           <input
             type="text"
-            placeholder="USD"
+            placeholder={input.currency}
             onChange={(event) =>
               setInput({ ...input, currency: event.target.value })
             }
@@ -80,10 +80,30 @@ export default function Home() {
 
       {data && (
         <>
-          In {input.date} {input.coin} was ${data.past}. Currently it is $
           <p>
-            It has {data.rightNow > data.past ? "increased" : "decreased"} by{" "}
-            {Math.abs(percentageChange(data.past, data.rightNow))}%
+            On <span className={styles.date}> {input.date}</span> {input.coin}{" "}
+            was worth{" "}
+            <span className={styles.money}>{data.past.toFixed(2)}</span>, the
+            current value is{" "}
+            <span className={styles.money}>{data.rightNow.toFixed(2)}</span>.
+          </p>
+
+          <p>
+            That {cryptoQuantity} costed{" "}
+            <span className={styles.money}>{cryptoQuantity * data.past}</span>{" "}
+            and now it values{" "}
+            <span className={styles.money}>
+              {cryptoQuantity * data.rightNow}{" "}
+            </span>
+            .
+          </p>
+
+          <p>
+            That means that the percentage change was{" "}
+            <span className={styles.percentage}>
+              {-percentageChange(data.past, data.rightNow).toFixed(2)}%
+            </span>
+            .
           </p>
         </>
       )}

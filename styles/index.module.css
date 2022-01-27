@@ -1,0 +1,33 @@
+.container {
+  margin: 10%;
+  text-align: center;
+  background: grey;
+  padding: 5%;
+}
+
+.container form label {
+  display: block;
+  margin: 10px;
+}
+
+.container > input {
+  margin: 10px;
+  display: block;
+  margin: auto;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  width: 50%;
+  text-align: center;
+}
+
+.date {
+  color: blue;
+}
+
+.money {
+  color: green;
+}
+
+.money::before {
+  content: "$";
+}
