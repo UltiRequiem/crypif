@@ -1,11 +1,14 @@
-import { FormEventHandler, useState } from "react";
 import type { CryptoInput, CryptoResponse } from "lib/cryptoData";
+import type { FormEventHandler } from "react";
+import { useState } from "react";
 
 export default function Home() {
   const [input, setInput] = useState<Partial<CryptoInput>>({
     coin: "BTC",
     currency: "USD",
   });
+
+  const [quanity, setQuanity] = useState(1);
 
   const [data, setData] = useState<Nullable<CryptoResponse>>(null);
 
@@ -19,6 +22,10 @@ export default function Home() {
       },
       body: JSON.stringify(input),
     });
+
+    if (response.status >= 400 && response.status < 600) {
+      return alert(`There is no data for "${input.coin}".`);
+    }
 
     setData(await response.json());
   };

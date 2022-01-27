@@ -9,18 +9,20 @@ export default async function handler(
 ) {
   if (req.method != "POST") {
     res.status(405).json({ error: "Method not allowed" });
-  } else if (!req.body) res.status(400).json({ error: "No body." });
+  } else if (!req.body) res.status(400).json({ error: "No request body" });
 
   const { date, coin, currency }: CryptoInput = req.body;
 
   if (!date || !coin || !currency) {
-    res.status(400).json({ error: "Missing required parameters." });
+    res.status(400).json({ error: "Missing required parameters" });
   }
 
-  const rightNow = await current(coin, currency);
-  const past = await historical(date, coin, currency);
-
-  res.json({ rightNow, past });
-
-  console.log(`${coin} on ${date} was ${past} ${currency}.`);
+  try {
+    res.json({
+      rightNow: await current(coin, currency),
+      past: await historical(date, coin, currency),
+    });
+  } catch {
+    res.status(400).json({ error: `There is no data for "${coin}".` });
+  }
 }

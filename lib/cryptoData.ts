@@ -22,6 +22,7 @@ export async function historical(
     `${BASE_API}/pricehistorical?fsym=${cryptoCurrency}&tsyms=${currency}&ts=${TS}&api_key=${API_KEY}`
   );
   const data = await rps.json();
+  console.log(data)
   return data[cryptoCurrency][currency];
 }
 
