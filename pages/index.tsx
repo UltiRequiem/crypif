@@ -10,7 +10,7 @@ const { Option } = Select;
 
 import styles from "styles/index.module.css";
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+const fetcher = (endpoint: string) => fetch(endpoint).then((res) => res.json());
 
 interface CryptoData {
   shortname: string;
@@ -69,6 +69,7 @@ export default function Home() {
         </label>
 
         <label>
+          Crypto:
           <Select
             showSearch
             style={{ width: 200 }}
@@ -82,13 +83,8 @@ export default function Home() {
                 .toLowerCase()
                 .localeCompare(optionB.children.toLowerCase())
             }
+            onChange={(coin) => setInput({ ...input, coin })}
           >
-            <Option value="1">Not Identified</Option>
-            <Option value="2">Closed</Option>
-            <Option value="3">Communicated</Option>
-            <Option value="4">Identified</Option>
-            <Option value="5">Resolved</Option>
-            <Option value="6">Cancelled</Option>
             {possibleCryptos.map((coin) => (
               <Option key={coin.shortname} value={coin.shortname}>
                 {coin.fullname}
@@ -103,10 +99,9 @@ export default function Home() {
             type="text"
             placeholder={input.currency}
             onChange={(event) => {
-              getKeyByValue(possibleCryptos, event.target.value);
               setInput({
                 ...input,
-                currency: getKeyByValue(possibleCryptos, event.target.value),
+                currency: event.target.value,
               });
             }}
           />
