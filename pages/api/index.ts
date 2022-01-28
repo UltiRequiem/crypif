@@ -26,3 +26,4 @@ export default async function handler(
     res.status(400).json({ error: `There is no data for "${coin}".` });
   }
 }
+
