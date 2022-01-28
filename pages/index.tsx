@@ -1,12 +1,10 @@
-import type { CryptoInput, CryptoNames, CryptoResponse } from "lib/crypto-data";
-import type { FormEventHandler } from "react";
-import { fetcher, percentageChange } from "lib/utils";
-import { useState } from "react";
 import useSWR from "swr";
-
+import { useState } from "react";
 import { InputNumber, Select } from "antd";
+import { fetcher, percentageChange } from "lib/utils";
 
-const { Option } = Select;
+import type { FormEventHandler } from "react";
+import type { CryptoNames, CryptoResponse } from "lib/crypto-data";
 
 import styles from "styles/index.module.css";
 
@@ -18,7 +16,6 @@ export default function Home() {
 
   const [date, setDate] = useState<Nullable<string>>();
   const [cryptoCurrency, setCrypto] = useState<Nullable<string>>();
-
   const [cryptoQuantity, setQuantity] = useState(0);
 
   const [data, setData] = useState<Nullable<CryptoResponse>>();
@@ -73,19 +70,23 @@ export default function Home() {
             placeholder="Search to Select"
             optionFilterProp="children"
             filterOption={(input, option) =>
-              option.children.toLowerCase().includes(input.toLowerCase())
+              option.children
+                .toString()
+                .toLowerCase()
+                .includes(input.toLowerCase())
             }
             filterSort={(optionA, optionB) =>
               optionA.children
+                .toString()
                 .toLowerCase()
-                .localeCompare(optionB.children.toLowerCase())
+                .localeCompare(optionB.children.toString().toLowerCase())
             }
             onChange={setCrypto}
           >
             {possibleCryptos.map((coin) => (
-              <Option key={coin.shortname} value={coin.shortname}>
+              <Select.Option key={coin.shortname} value={coin.shortname}>
                 {coin.fullname}
-              </Option>
+              </Select.Option>
             ))}
           </Select>
         </label>
@@ -93,7 +94,7 @@ export default function Home() {
         <input type="submit" value="Submit" />
       </form>
 
-      <InputNumber onChange={setQuantity} />
+      <InputNumber onChange={(value) => setQuantity(value as number)} />
 
       {data && (
         <>

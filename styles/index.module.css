@@ -1,8 +1,16 @@
 .container {
-  margin: 10%;
   text-align: center;
-  background: grey;
+  background: #002b52;
   padding: 5%;
+  height: 100vh;
+}
+
+.container h1 {
+  font-size: 3rem;
+  color: #fff;
+  margin-bottom: 2rem;
+  font-family: "Risque";
+  font-weight: bold;
 }
 
 .container form label {
