@@ -9,7 +9,9 @@ export default async function handler(
 ) {
   if (request.method != "POST") {
     response.status(405).json({ error: "Method not allowed" });
-  } else if (!request.body) response.status(400).json({ error: "No request body" });
+  } else if (!request.body) {
+    response.status(400).json({ error: "No request body" });
+  }
 
   const { date, coin, currency }: CryptoInput = request.body;
 

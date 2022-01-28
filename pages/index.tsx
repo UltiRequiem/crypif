@@ -1,10 +1,10 @@
-import type { CryptoInput, CryptoResponse, CryptoNames } from "lib/crypto-data";
+import type { CryptoInput, CryptoNames, CryptoResponse } from "lib/crypto-data";
 import type { FormEventHandler } from "react";
-import { percentageChange, fetcher } from "lib/utils";
+import { fetcher, percentageChange } from "lib/utils";
 import { useState } from "react";
 import useSWR from "swr";
 
-import { Select, InputNumber } from "antd";
+import { InputNumber, Select } from "antd";
 
 const { Option } = Select;
 
@@ -16,28 +16,34 @@ export default function Home() {
     fetcher
   );
 
-  const [input, setInput] = useState<Partial<CryptoInput>>({
-    coin: "BTC",
-    currency: "USD",
-  });
+  const [date, setDate] = useState<Nullable<string>>();
+  const [cryptoCurrency, setCrypto] = useState<Nullable<string>>();
 
   const [cryptoQuantity, setQuantity] = useState(0);
 
-  const [data, setData] = useState<Nullable<CryptoResponse>>(null);
+  const [data, setData] = useState<Nullable<CryptoResponse>>();
 
   const submitHandler: FormEventHandler = async (event) => {
     event.preventDefault();
+
+    const data = JSON.stringify({
+      date,
+      crypto: cryptoCurrency,
+      currency: "USD",
+    });
+
+    console.log(data);
 
     const response = await fetch("/api", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(input),
+      body: JSON.stringify({ date, coin: cryptoCurrency, currency: "USD" }),
     });
 
     if (response.status >= 400 && response.status < 600) {
-      return alert(`There is no data for "${input.coin}".`);
+      return alert(`There is no data for "${cryptoCurrency}".`);
     }
 
     setData(await response.json());
@@ -55,9 +61,7 @@ export default function Home() {
           <input
             required
             type="date"
-            onChange={(event) =>
-              setInput({ ...input, date: event.target.value })
-            }
+            onChange={(event) => setDate(event.target.value)}
           />
         </label>
 
@@ -76,7 +80,7 @@ export default function Home() {
                 .toLowerCase()
                 .localeCompare(optionB.children.toLowerCase())
             }
-            onChange={(coin) => setInput({ ...input, coin })}
+            onChange={setCrypto}
           >
             {possibleCryptos.map((coin) => (
               <Option key={coin.shortname} value={coin.shortname}>
@@ -94,10 +98,9 @@ export default function Home() {
       {data && (
         <>
           <p>
-            On <span className={styles.date}> {input.date}</span> {input.coin}{" "}
-            was worth{" "}
-            <span className={styles.money}>{data.past.toFixed(2)}</span>, the
-            current value is{" "}
+            On <span className={styles.date}>{date}</span> {cryptoCurrency} was
+            worth <span className={styles.money}>{data.past.toFixed(2)}</span>,
+            the current value is{" "}
             <span className={styles.money}>{data.rightNow.toFixed(2)}</span>.
           </p>
 

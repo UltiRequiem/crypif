@@ -1,2 +1,2 @@
-type Nullable<T> = T | null;
+type Nullable<T> = T | undefined;
 declare module "*.css";
