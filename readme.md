@@ -1,10 +1,11 @@
 # crypif
 
+Put a date and a crypto, and optionally a quantity of that crypto,
+it will tell you how much has augmented/increased in dollars and percentage.
+
 ## Figma
 
-Although it may not seem like it, this was designed before it was implemented.
-
-> [link](https://figma.com/file/lYFSAii5uvTiSbicomlSKb/crypif)
+[Project Link](https://figma.com/file/lYFSAii5uvTiSbicomlSKb/crypif)
 
 ## Licence
 

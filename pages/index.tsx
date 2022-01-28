@@ -1,7 +1,8 @@
 import useSWR from "swr";
 import { useState } from "react";
-import { InputNumber, Select } from "antd";
-import { fetcher, percentageChange } from "lib/utils";
+import { InputNumber, DatePicker, Space, message } from "antd";
+import { percentageChange, fetcher } from "lib/utils";
+import { Select, SelectOption } from "components";
 
 import type { FormEventHandler } from "react";
 import type { CryptoNames, CryptoResponse } from "lib/crypto-data";
@@ -9,27 +10,16 @@ import type { CryptoNames, CryptoResponse } from "lib/crypto-data";
 import styles from "styles/index.module.css";
 
 export default function Home() {
-  const { data: possibleCryptos, error } = useSWR<CryptoNames[]>(
-    "/crypto.json",
-    fetcher
-  );
+  const { data: cryptos } = useSWR<CryptoNames[]>("/crypto.json", fetcher);
 
-  const [date, setDate] = useState<Nullable<string>>();
-  const [cryptoCurrency, setCrypto] = useState<Nullable<string>>();
+  const [date, setDate] = useState("");
+  const [cryptoCurrency, setCrypto] = useState("");
   const [cryptoQuantity, setQuantity] = useState(0);
 
   const [data, setData] = useState<Nullable<CryptoResponse>>();
 
   const submitHandler: FormEventHandler = async (event) => {
     event.preventDefault();
-
-    const data = JSON.stringify({
-      date,
-      crypto: cryptoCurrency,
-      currency: "USD",
-    });
-
-    console.log(data);
 
     const response = await fetch("/api", {
       method: "POST",
@@ -40,14 +30,13 @@ export default function Home() {
     });
 
     if (response.status >= 400 && response.status < 600) {
-      return alert(`There is no data for "${cryptoCurrency}".`);
+      return message.error(`There is no data for "${cryptoCurrency}".`);
     }
 
     setData(await response.json());
   };
 
-  if (error) return <div>Failed to load</div>;
-  if (!possibleCryptos) return <div>Loading...</div>;
+  if (!cryptos) return <div>Loading...</div>;
 
   return (
     <div className={styles.container}>
@@ -55,38 +44,18 @@ export default function Home() {
       <form onSubmit={submitHandler}>
         <label>
           Date:
-          <input
-            required
-            type="date"
-            onChange={(event) => setDate(event.target.value)}
+          <DatePicker
+            onChange={(value) => setDate(value.format("YYYY-MM-DD"))}
           />
         </label>
 
         <label>
           Crypto:
-          <Select
-            showSearch
-            style={{ width: 200 }}
-            placeholder="Search to Select"
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              option.children
-                .toString()
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-            filterSort={(optionA, optionB) =>
-              optionA.children
-                .toString()
-                .toLowerCase()
-                .localeCompare(optionB.children.toString().toLowerCase())
-            }
-            onChange={setCrypto}
-          >
-            {possibleCryptos.map((coin) => (
-              <Select.Option key={coin.shortname} value={coin.shortname}>
+          <Select onChange={setCrypto}>
+            {cryptos.map((coin) => (
+              <SelectOption key={coin.shortname} value={coin.shortname}>
                 {coin.fullname}
-              </Select.Option>
+              </SelectOption>
             ))}
           </Select>
         </label>
@@ -100,21 +69,22 @@ export default function Home() {
         <>
           <p>
             On <span className={styles.date}>{date}</span> {cryptoCurrency} was
-            worth <span className={styles.money}>{data.past.toFixed(2)}</span>,
-            the current value is{" "}
+            worth <span className={styles.money}>{data.past}</span>, the current
+            value is{" "}
             <span className={styles.money}>{data.rightNow.toFixed(2)}</span>.
           </p>
 
-          <p>
-            That {cryptoQuantity} costed{" "}
-            <span className={styles.money}>{cryptoQuantity * data.past}</span>{" "}
-            and now it values{" "}
-            <span className={styles.money}>
-              {cryptoQuantity * data.rightNow}{" "}
-            </span>
-            .
-          </p>
-
+          {cryptoQuantity > 0 && (
+            <p>
+              That {cryptoQuantity} costed{" "}
+              <span className={styles.money}>{cryptoQuantity * data.past}</span>{" "}
+              and now it values{" "}
+              <span className={styles.money}>
+                {cryptoQuantity * data.rightNow}{" "}
+              </span>
+              .
+            </p>
+          )}
           <p>
             That means that the percentage change was{" "}
             <span className={styles.percentage}>
