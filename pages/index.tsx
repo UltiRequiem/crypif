@@ -1,24 +1,17 @@
-import type { CryptoInput, CryptoResponse } from "lib/cryptoData";
+import type { CryptoInput, CryptoResponse, CryptoNames } from "lib/crypto-data";
 import type { FormEventHandler } from "react";
-import { percentageChange, getKeyByValue } from "lib/utils";
+import { percentageChange, fetcher } from "lib/utils";
 import { useState } from "react";
 import useSWR from "swr";
 
-import { Select } from "antd";
+import { Select, InputNumber } from "antd";
 
 const { Option } = Select;
 
 import styles from "styles/index.module.css";
 
-const fetcher = (endpoint: string) => fetch(endpoint).then((res) => res.json());
-
-interface CryptoData {
-  shortname: string;
-  fullname: string;
-}
-
 export default function Home() {
-  const { data: possibleCryptos, error } = useSWR<CryptoData[]>(
+  const { data: possibleCryptos, error } = useSWR<CryptoNames[]>(
     "/crypto.json",
     fetcher
   );
@@ -76,7 +69,7 @@ export default function Home() {
             placeholder="Search to Select"
             optionFilterProp="children"
             filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              option.children.toLowerCase().includes(input.toLowerCase())
             }
             filterSort={(optionA, optionB) =>
               optionA.children
@@ -93,26 +86,11 @@ export default function Home() {
           </Select>
         </label>
 
-        <label>
-          Currency:
-          <input
-            type="text"
-            placeholder={input.currency}
-            onChange={(event) => {
-              setInput({
-                ...input,
-                currency: event.target.value,
-              });
-            }}
-          />
-        </label>
-
         <input type="submit" value="Submit" />
       </form>
-      <input
-        type="text"
-        onChange={(event) => setQuantity(+event.target.value)}
-      />
+
+      <InputNumber onChange={setQuantity} />
+
       {data && (
         <>
           <p>
