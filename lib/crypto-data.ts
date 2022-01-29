@@ -1,5 +1,5 @@
 const BASE_API = "https://min-api.cryptocompare.com/data";
-const API_KEY = process.env.API_KEY;
+const { API_KEY } = process.env;
 
 export async function current(
   cryptoCurrency = "BTC",
@@ -35,4 +35,3 @@ export interface CryptoResponse {
   past: number;
   rightNow: number;
 }
-

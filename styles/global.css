@@ -1,4 +1,10 @@
 * {
   margin: 0;
   box-sizing: border-box;
+  text-align: center;
+}
+
+h1,
+p {
+  color: white;
 }

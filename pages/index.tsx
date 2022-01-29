@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { InputNumber, DatePicker, Space, message, Button } from "antd";
-import { percentageChange } from "lib/utils";
+import { InputNumber, DatePicker, message, Button } from "antd";
 import cryptosNames from "lib/crypto-names";
-import { Select, SelectOption } from "components";
+import { Select, SelectOption, ColoredText } from "components";
 
 import type { FormEventHandler } from "react";
 import type { CryptoResponse } from "lib/crypto-data";
@@ -44,7 +43,11 @@ export default function Home() {
         <label>
           Date:
           <DatePicker
-            disabledDate={(d) => !d || d.isSameOrBefore("2010-01-01")}
+            disabledDate={(d) =>
+              !d ||
+              d.isSameOrBefore("2010-01-01") ||
+              d.isSameOrAfter(new Date())
+            }
             onChange={(date) => setDate(date.format("YYYY-MM-DD"))}
           />
         </label>
@@ -66,7 +69,46 @@ export default function Home() {
         >
           Calculate
         </Button>
+        {data && (
+          <label>
+            Crypto Quantity:
+            <InputNumber
+              style={{ color: "black" }}
+              type="number"
+              onChange={(value) => setQuantity(+value)}
+            />
+          </label>
+        )}
       </div>
+
+      {data && (
+        <div>
+          <p>
+            On <ColoredText color="lightblue" value={date} />{" "}
+            <ColoredText value={cryptoCurrency} color="brown" /> was worth{" "}
+            <ColoredText color="green" value={`$${data.past}`} />
+          </p>
+          <p>
+            Today, it is worth{" "}
+            <ColoredText color="green" value={`$${data.rightNow}`} />
+          </p>
+
+          {cryptoQuantity > 0 && (
+            <p>
+              Your{" "}
+              <ColoredText
+                color="green"
+                value={`$${cryptoQuantity * data.past}`}
+              />{" "}
+              turned into{" "}
+              <ColoredText
+                color="green"
+                value={`$${cryptoQuantity * data.rightNow}`}
+              />
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
