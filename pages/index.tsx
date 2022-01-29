@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { InputNumber, DatePicker, message } from "antd";
-import { percentageChange } from "lib/utils";
+import { InputNumber, DatePicker, message, Button } from "antd";
 import cryptosNames from "lib/crypto-names";
-import { Select, SelectOption } from "components";
+import { Select, SelectOption, ColoredText } from "components";
 
 import type { FormEventHandler } from "react";
 import type { CryptoResponse } from "lib/crypto-data";
@@ -17,6 +16,10 @@ export default function Home() {
 
   const submitHandler: FormEventHandler = async (event) => {
     event.preventDefault();
+
+    if (!date || !cryptoCurrency) {
+      return message.error("Please fill the crypto and date fields");
+    }
 
     const response = await fetch("/api", {
       method: "POST",
@@ -36,59 +39,78 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <h1>Crypif</h1>
-      <form onSubmit={submitHandler}>
-        <label>
-          Date:
-          <DatePicker
-            onChange={(value) => setDate(value.format("YYYY-MM-DD"))}
-          />
-        </label>
+      <div className={styles.layout}>
+        <div className={styles.form}>
+          <label>
+            Date
+            <DatePicker
+              disabledDate={(d) =>
+                !d ||
+                d.isSameOrBefore("2010-01-01") ||
+                d.isSameOrAfter(new Date())
+              }
+              onChange={(date) => setDate(date.format("YYYY-MM-DD"))}
+            />
+          </label>
+          <label>
+            Crypto
+            <Select onChange={setCrypto}>
+              {cryptosNames.map((crypto) => (
+                <SelectOption key={crypto.shortname} value={crypto.shortname}>
+                  {crypto.fullname}
+                </SelectOption>
+              ))}
+            </Select>
+          </label>
 
-        <label>
-          Crypto:
-          <Select onChange={setCrypto}>
-            {cryptosNames.map((coin) => (
-              <SelectOption key={coin.shortname} value={coin.shortname}>
-                {coin.fullname}
-              </SelectOption>
-            ))}
-          </Select>
-        </label>
-
-        <input type="submit" value="Submit" />
-      </form>
-
-      <InputNumber onChange={(value) => setQuantity(value as number)} />
-
-      {data && (
-        <>
-          <p>
-            On <span className={styles.date}>{date}</span> {cryptoCurrency} was
-            worth <span className={styles.money}>{data.past}</span>, the current
-            value is{" "}
-            <span className={styles.money}>{data.rightNow.toFixed(2)}</span>.
-          </p>
-
-          {cryptoQuantity > 0 && (
-            <p>
-              That {cryptoQuantity} costed{" "}
-              <span className={styles.money}>{cryptoQuantity * data.past}</span>{" "}
-              and now it values{" "}
-              <span className={styles.money}>
-                {cryptoQuantity * data.rightNow}{" "}
-              </span>
-              .
-            </p>
+          <Button
+            className={styles.button}
+            type="primary"
+            onClick={submitHandler}
+          >
+            Calculate
+          </Button>
+          {data && (
+            <label>
+              Crypto Quantity
+              <InputNumber
+                style={{ color: "black" }}
+                type="number"
+                onChange={(value) => setQuantity(+value)}
+              />
+            </label>
           )}
-          <p>
-            That means that the percentage change was{" "}
-            <span className={styles.percentage}>
-              {-percentageChange(data.past, data.rightNow).toFixed(2)}%
-            </span>
-            .
-          </p>
-        </>
-      )}
+        </div>
+
+        {data && (
+          <div className="data">
+            <p>
+              On <ColoredText color="lightblue" value={date} />{" "}
+              <ColoredText value={cryptoCurrency} color="brown" /> was worth{" "}
+              <ColoredText color="green" value={`$${data.past}`} />
+            </p>
+            <p>
+              Today, it is worth{" "}
+              <ColoredText color="green" value={`$${data.rightNow}`} />
+            </p>
+
+            {cryptoQuantity > 0 && (
+              <p>
+                Your{" "}
+                <ColoredText
+                  color="green"
+                  value={`$${cryptoQuantity * data.past}`}
+                />{" "}
+                turned into{" "}
+                <ColoredText
+                  color="green"
+                  value={`$${cryptoQuantity * data.rightNow}`}
+                />
+              </p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

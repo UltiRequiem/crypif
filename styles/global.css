@@ -1,4 +1,12 @@
 * {
   margin: 0;
   box-sizing: border-box;
+  text-align: center;
+}
+
+h1,
+label,
+p {
+  font-size: 1.2em;
+  color: white;
 }

@@ -55,7 +55,6 @@ const cryptoNames: CryptoNames[] = [
   { shortname: "EOS", fullname: "eos" },
   { shortname: "AAVE", fullname: "aave" },
   { shortname: "CAKE", fullname: "pancakeswap" },
-  { shortname: "BTT", fullname: "bittorrent (new)" },
   { shortname: "GRT", fullname: "the graph" },
   { shortname: "MKR", fullname: "maker" },
   { shortname: "BSV", fullname: "bitcoin sv" },

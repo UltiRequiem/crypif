@@ -1,41 +1,35 @@
 .container {
-  text-align: center;
   background: #002b52;
-  padding: 5%;
   height: 100vh;
 }
 
 .container h1 {
-  font-size: 3rem;
-  color: #fff;
-  margin-bottom: 2rem;
   font-family: "Risque";
-  font-weight: bold;
+  font-size: 9em;
 }
 
-.container form label {
-  display: block;
-  margin: 10px;
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.container > input {
-  margin: 10px;
-  display: block;
-  margin: auto;
-  margin-top: 5%;
-  margin-bottom: 5%;
-  width: 50%;
-  text-align: center;
+.form * {
+  margin: 0.5%;
 }
 
-.date {
-  color: blue;
+.layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.money {
-  color: green;
+.layout * {
+  margin: 1%;
 }
 
-.money::before {
-  content: "$";
+@media only screen and (max-width: 600px) {
+  .layout {
+    flex-direction: column;
+  }
 }
