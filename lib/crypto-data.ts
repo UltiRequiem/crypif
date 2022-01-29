@@ -36,7 +36,3 @@ export interface CryptoResponse {
   rightNow: number;
 }
 
-export interface CryptoNames {
-  shortname: string;
-  fullname: string;
-}

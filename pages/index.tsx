@@ -1,21 +1,18 @@
-import useSWR from "swr";
 import { useState } from "react";
-import { InputNumber, DatePicker, Space, message } from "antd";
-import { percentageChange, fetcher } from "lib/utils";
+import { InputNumber, DatePicker, message } from "antd";
+import { percentageChange } from "lib/utils";
+import cryptosNames from "lib/crypto-names";
 import { Select, SelectOption } from "components";
 
 import type { FormEventHandler } from "react";
-import type { CryptoNames, CryptoResponse } from "lib/crypto-data";
+import type { CryptoResponse } from "lib/crypto-data";
 
 import styles from "styles/index.module.css";
 
 export default function Home() {
-  const { data: cryptos } = useSWR<CryptoNames[]>("/crypto.json", fetcher);
-
   const [date, setDate] = useState("");
   const [cryptoCurrency, setCrypto] = useState("");
   const [cryptoQuantity, setQuantity] = useState(0);
-
   const [data, setData] = useState<Nullable<CryptoResponse>>();
 
   const submitHandler: FormEventHandler = async (event) => {
@@ -36,8 +33,6 @@ export default function Home() {
     setData(await response.json());
   };
 
-  if (!cryptos) return <div>Loading...</div>;
-
   return (
     <div className={styles.container}>
       <h1>Crypif</h1>
@@ -52,7 +47,7 @@ export default function Home() {
         <label>
           Crypto:
           <Select onChange={setCrypto}>
-            {cryptos.map((coin) => (
+            {cryptosNames.map((coin) => (
               <SelectOption key={coin.shortname} value={coin.shortname}>
                 {coin.fullname}
               </SelectOption>
