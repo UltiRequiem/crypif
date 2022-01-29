@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { InputNumber, DatePicker, message } from "antd";
+import { InputNumber, DatePicker, Space, message, Button } from "antd";
 import { percentageChange } from "lib/utils";
 import cryptosNames from "lib/crypto-names";
 import { Select, SelectOption } from "components";
@@ -17,6 +17,10 @@ export default function Home() {
 
   const submitHandler: FormEventHandler = async (event) => {
     event.preventDefault();
+
+    if (!date || !cryptoCurrency) {
+      return message.error("Please fill the crypto and date fields");
+    }
 
     const response = await fetch("/api", {
       method: "POST",
@@ -36,59 +40,33 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <h1>Crypif</h1>
-      <form onSubmit={submitHandler}>
+      <div className={styles.form}>
         <label>
           Date:
           <DatePicker
-            onChange={(value) => setDate(value.format("YYYY-MM-DD"))}
+            disabledDate={(d) => !d || d.isSameOrBefore("2010-01-01")}
+            onChange={(date) => setDate(date.format("YYYY-MM-DD"))}
           />
         </label>
-
         <label>
           Crypto:
           <Select onChange={setCrypto}>
-            {cryptosNames.map((coin) => (
-              <SelectOption key={coin.shortname} value={coin.shortname}>
-                {coin.fullname}
+            {cryptosNames.map((crypto) => (
+              <SelectOption key={crypto.shortname} value={crypto.shortname}>
+                {crypto.fullname}
               </SelectOption>
             ))}
           </Select>
         </label>
 
-        <input type="submit" value="Submit" />
-      </form>
-
-      <InputNumber onChange={(value) => setQuantity(value as number)} />
-
-      {data && (
-        <>
-          <p>
-            On <span className={styles.date}>{date}</span> {cryptoCurrency} was
-            worth <span className={styles.money}>{data.past}</span>, the current
-            value is{" "}
-            <span className={styles.money}>{data.rightNow.toFixed(2)}</span>.
-          </p>
-
-          {cryptoQuantity > 0 && (
-            <p>
-              That {cryptoQuantity} costed{" "}
-              <span className={styles.money}>{cryptoQuantity * data.past}</span>{" "}
-              and now it values{" "}
-              <span className={styles.money}>
-                {cryptoQuantity * data.rightNow}{" "}
-              </span>
-              .
-            </p>
-          )}
-          <p>
-            That means that the percentage change was{" "}
-            <span className={styles.percentage}>
-              {-percentageChange(data.past, data.rightNow).toFixed(2)}%
-            </span>
-            .
-          </p>
-        </>
-      )}
+        <Button
+          className={styles.button}
+          type="primary"
+          onClick={submitHandler}
+        >
+          Calculate
+        </Button>
+      </div>
     </div>
   );
 }
