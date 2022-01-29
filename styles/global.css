@@ -5,6 +5,8 @@
 }
 
 h1,
+label,
 p {
+  font-size: 1.2em;
   color: white;
 }

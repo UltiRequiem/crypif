@@ -8,10 +8,6 @@
   font-size: 9em;
 }
 
-.container p {
-  font-size: 1.2em;
-}
-
 .form {
   display: flex;
   flex-direction: column;
@@ -19,5 +15,21 @@
 }
 
 .form * {
+  margin: 0.5%;
+}
+
+.layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.layout * {
   margin: 1%;
+}
+
+@media only screen and (max-width: 600px) {
+  .layout {
+    flex-direction: column;
+  }
 }

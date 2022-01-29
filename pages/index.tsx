@@ -39,76 +39,78 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <h1>Crypif</h1>
-      <div className={styles.form}>
-        <label>
-          Date:
-          <DatePicker
-            disabledDate={(d) =>
-              !d ||
-              d.isSameOrBefore("2010-01-01") ||
-              d.isSameOrAfter(new Date())
-            }
-            onChange={(date) => setDate(date.format("YYYY-MM-DD"))}
-          />
-        </label>
-        <label>
-          Crypto:
-          <Select onChange={setCrypto}>
-            {cryptosNames.map((crypto) => (
-              <SelectOption key={crypto.shortname} value={crypto.shortname}>
-                {crypto.fullname}
-              </SelectOption>
-            ))}
-          </Select>
-        </label>
-
-        <Button
-          className={styles.button}
-          type="primary"
-          onClick={submitHandler}
-        >
-          Calculate
-        </Button>
-        {data && (
+      <div className={styles.layout}>
+        <div className={styles.form}>
           <label>
-            Crypto Quantity:
-            <InputNumber
-              style={{ color: "black" }}
-              type="number"
-              onChange={(value) => setQuantity(+value)}
+            Date
+            <DatePicker
+              disabledDate={(d) =>
+                !d ||
+                d.isSameOrBefore("2010-01-01") ||
+                d.isSameOrAfter(new Date())
+              }
+              onChange={(date) => setDate(date.format("YYYY-MM-DD"))}
             />
           </label>
-        )}
-      </div>
+          <label>
+            Crypto
+            <Select onChange={setCrypto}>
+              {cryptosNames.map((crypto) => (
+                <SelectOption key={crypto.shortname} value={crypto.shortname}>
+                  {crypto.fullname}
+                </SelectOption>
+              ))}
+            </Select>
+          </label>
 
-      {data && (
-        <div>
-          <p>
-            On <ColoredText color="lightblue" value={date} />{" "}
-            <ColoredText value={cryptoCurrency} color="brown" /> was worth{" "}
-            <ColoredText color="green" value={`$${data.past}`} />
-          </p>
-          <p>
-            Today, it is worth{" "}
-            <ColoredText color="green" value={`$${data.rightNow}`} />
-          </p>
-
-          {cryptoQuantity > 0 && (
-            <p>
-              Your{" "}
-              <ColoredText
-                color="green"
-                value={`$${cryptoQuantity * data.past}`}
-              />{" "}
-              turned into{" "}
-              <ColoredText
-                color="green"
-                value={`$${cryptoQuantity * data.rightNow}`}
+          <Button
+            className={styles.button}
+            type="primary"
+            onClick={submitHandler}
+          >
+            Calculate
+          </Button>
+          {data && (
+            <label>
+              Crypto Quantity
+              <InputNumber
+                style={{ color: "black" }}
+                type="number"
+                onChange={(value) => setQuantity(+value)}
               />
-            </p>
+            </label>
           )}
         </div>
-      )}
+
+        {data && (
+          <div className="data">
+            <p>
+              On <ColoredText color="lightblue" value={date} />{" "}
+              <ColoredText value={cryptoCurrency} color="brown" /> was worth{" "}
+              <ColoredText color="green" value={`$${data.past}`} />
+            </p>
+            <p>
+              Today, it is worth{" "}
+              <ColoredText color="green" value={`$${data.rightNow}`} />
+            </p>
+
+            {cryptoQuantity > 0 && (
+              <p>
+                Your{" "}
+                <ColoredText
+                  color="green"
+                  value={`$${cryptoQuantity * data.past}`}
+                />{" "}
+                turned into{" "}
+                <ColoredText
+                  color="green"
+                  value={`$${cryptoQuantity * data.rightNow}`}
+                />
+              </p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
