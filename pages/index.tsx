@@ -7,6 +7,7 @@ import type { FormEventHandler } from "react";
 import type { CryptoResponse } from "lib/crypto-data";
 
 import styles from "styles/index.module.css";
+import Link from "next/link";
 
 export default function Home() {
   const [date, setDate] = useState("");
@@ -75,6 +76,7 @@ export default function Home() {
               Crypto Quantity
               <InputNumber
                 style={{ color: "black" }}
+                min={0}
                 type="number"
                 onChange={(value) => setQuantity(+value)}
               />
@@ -111,6 +113,15 @@ export default function Home() {
           </div>
         )}
       </div>
+      <div className={styles.push}></div>
+      <footer>
+        <li>
+          <Link href="https://ultirequiem.com">ultirequiem.com</Link>
+        </li>
+        <li>
+          <Link href="https://github.com/UltiRequiem/crypif">github</Link>
+        </li>
+      </footer>
     </div>
   );
 }

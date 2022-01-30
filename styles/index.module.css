@@ -8,6 +8,22 @@
   font-size: 9em;
 }
 
+.container footer,
+.push {
+  height: 50px;
+  background-color: #002b52;
+}
+
+.container footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container footer li {
+  margin: 1%;
+}
+
 .form {
   display: flex;
   flex-direction: column;
