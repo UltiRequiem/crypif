@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Head from "next/head";
 import { InputNumber, DatePicker, message, Button } from "antd";
 import cryptosNames from "lib/crypto-names";
 import { Select, SelectOption, ColoredText } from "components";
